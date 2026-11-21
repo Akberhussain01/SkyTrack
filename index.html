@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyTrack — Intelligent Flight Booking & Live Telemetry</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════ NAVBAR ═══════════════════════════ -->
+  <header class="nav-wrapper">
+    <nav class="nav-island" id="navbar">
+      <a href="#" class="brand-logo">
+        <span class="logo-icon">✈</span>
+        <span>Sky<span class="brand-accent">Track</span></span>
+      </a>
+
+      <ul class="nav-menu">
+        <li><a href="#search-section">Search</a></li>
+        <li><a href="#flights">Flights</a></li>
+        <li><a href="#tracking">Live Radar</a></li>
+        <li><a href="#process">Experience</a></li>
+        <li><a href="#bookings">My Journey</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-ghost" onclick="toggleChat()">✦ AI Assistant</button>
+        <button class="btn-primary" onclick="scrollToSection('search-section')">Book Flight</button>
+        <div class="user-avatar" title="Account: Alex Harrison">AH</div>
+      </div>
+
+      <button class="mobile-toggle" id="menuToggle" aria-label="Toggle Navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+
+    <!-- Mobile Dropdown -->
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#search-section" onclick="closeMobileNav()">Search Flights</a>
+      <a href="#flights" onclick="closeMobileNav()">Available Flights</a>
+      <a href="#tracking" onclick="closeMobileNav()">Live Radar</a>
+      <a href="#process" onclick="closeMobileNav()">Experience</a>
+      <a href="#bookings" onclick="closeMobileNav()">My Journey</a>
+      <button class="btn-primary btn-block" onclick="toggleChat(); closeMobileNav();">✦ Open SkyTrack AI</button>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+  <section class="section-wrap hero-wrap" id="search-section">
+    <div class="island hero-island">
+      <div class="container hero-content">
+
+        <div class="pill-badge">
+          <span class="pill-dot"></span>
+          Real-time aviation intelligence & fare forecasting
+        </div>
+
+        <h1 class="hero-heading">
+          Travel smarter.<br>
+          <span class="gradient-text">Fly lighter.</span>
+        </h1>
+
+        <p class="hero-description">
+          Global routes, transparent fares, live cockpit telemetry, and instant AI travel intelligence — curated in one cohesive flight experience.
+        </p>
+
+        <!-- LUXURY SEARCH CAPSULE -->
+        <div class="search-capsule-card">
+          <div class="trip-selector">
+            <label class="trip-opt">
+              <input type="radio" name="tripType" value="round" checked onchange="handleTripTypeChange(this.value)">
+              <span>Round Trip</span>
+            </label>
+            <label class="trip-opt">
+              <input type="radio" name="tripType" value="oneway" onchange="handleTripTypeChange(this.value)">
+              <span>One Way</span>
+            </label>
+            <label class="trip-opt">
+              <input type="radio" name="tripType" value="multi" onchange="handleTripTypeChange(this.value)">
+              <span>Multi-City</span>
+            </label>
+            <span class="class-badge">Economy Class</span>
+          </div>
+
+          <div class="search-grid">
+            <div class="input-cell">
+              <span class="cell-label">ORIGIN</span>
+              <div class="cell-field">
+                <span class="field-icon">🛫</span>
+                <input type="text" id="originInput" value="HYD" placeholder="City or IATA code" maxlength="30" />
+              </div>
+              <span class="cell-sub" id="originName">Hyderabad, India</span>
+            </div>
+
+            <button class="swap-btn" onclick="swapAirports()" title="Swap Origin and Destination" aria-label="Swap airports">⇄</button>
+
+            <div class="input-cell">
+              <span class="cell-label">DESTINATION</span>
+              <div class="cell-field">
+                <span class="field-icon">🛬</span>
+                <input type="text" id="destInput" value="JFK" placeholder="City or IATA code" maxlength="30" />
+              </div>
+              <span class="cell-sub" id="destName">New York, USA</span>
+            </div>
+
+            <div class="input-cell">
+              <span class="cell-label">DEPARTURE</span>
+              <div class="cell-field">
+                <span class="field-icon">📅</span>
+                <input type="date" id="departDate" />
+              </div>
+              <span class="cell-sub" id="returnLabel">Return: Flexible</span>
+            </div>
+
+            <div class="input-cell">
+              <span class="cell-label">PASSENGERS</span>
+              <div class="cell-field">
+                <span class="field-icon">👤</span>
+                <select id="passengerSelect">
+                  <option value="1">1 Adult (12+ yrs)</option>
+                  <option value="2">2 Adults</option>
+                  <option value="3">3 Adults, 1 Child</option>
+                  <option value="4">4 Adults</option>
+                </select>
+              </div>
+              <span class="cell-sub">Standard Fare</span>
+            </div>
+
+            <button class="btn-primary search-action-btn" onclick="triggerSearch()">
+              <span>Search Flights</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ STATS RIBBON ═══════════════════════════ -->
+  <section class="section-wrap stats-wrap">
+    <div class="island dark-island stats-island">
+      <div class="container">
+        <div class="stats-row">
+          <div class="stat-unit">
+            <span class="stat-number" id="trackedCount">18,492</span>
+            <span class="stat-caption">Flights actively tracked</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-unit">
+            <span class="stat-number">3,200+</span>
+            <span class="stat-caption">Connected global hubs</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-unit">
+            <span class="stat-number">89.4%</span>
+            <span class="stat-caption">On-time dispatch rate</span>
+          </div>
+          <div class="stat-separator"></div>
+          <div class="stat-unit">
+            <span class="stat-number">24.8K</span>
+            <span class="stat-caption">AI queries assisted today</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ FLIGHT DEALS ═══════════════════════════ -->
+  <section class="section-wrap" id="flights">
+    <div class="island">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="pill-badge">
+            <span class="pill-dot"></span> Available Routes
+          </div>
+          <h2 class="section-title">Curated flight schedules.</h2>
+          <p class="section-subtitle" id="resultsStatus">
+            Real-time fares from Hyderabad (HYD) to New York (JFK) • Lowest price guarantee
+          </p>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="results-toolbar">
+          <div class="sort-tabs">
+            <button class="tab-pill active" onclick="sortFlights('best', this)">Best Value</button>
+            <button class="tab-pill" onclick="sortFlights('cheap', this)">Cheapest</button>
+            <button class="tab-pill" onclick="sortFlights('fast', this)">Fastest</button>
+          </div>
+          <div class="results-count" id="flightMatchesLabel">4 flights found</div>
+        </div>
+
+        <!-- Dynamic Flight Cards -->
+        <div class="flights-stack" id="flightList">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ LIVE TELEMETRY RADAR ═══════════════════════════ -->
+  <section class="section-wrap" id="tracking">
+    <div class="island">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="pill-badge">
+            <span class="pill-dot"></span> Real-Time Radar
+          </div>
+          <h2 class="section-title">Live cockpit telemetry.</h2>
+          <p class="section-subtitle">
+            Track transponder signals, flight vectors, cruising altitudes, and real-time route weather.
+          </p>
+        </div>
+
+        <div class="telemetry-layout">
+
+          <!-- Radar Canvas Window -->
+          <div class="radar-display">
+            <div class="radar-glass-overlay">
+              <div class="radar-ping"></div>
+              <div class="radar-grid-lines"></div>
+
+              <!-- Animated Vector Path -->
+              <svg class="flight-vector-svg" viewBox="0 0 600 360">
+                <defs>
+                  <linearGradient id="vectorGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#2559ED" stop-opacity="0.2"/>
+                    <stop offset="50%" stop-color="#23E6AF" stop-opacity="0.9"/>
+                    <stop offset="100%" stop-color="#63E8F9" stop-opacity="0.3"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 80,260 Q 280,70 520,120" fill="none" stroke="url(#vectorGrad)" stroke-width="3" stroke-dasharray="6 6" class="route-dash-anim" />
+              </svg>
+
+              <!-- Origin Point -->
+              <div class="waypoint wp-origin">
+                <span class="wp-dot"></span>
+                <span class="wp-tag">HYD</span>
+              </div>
+
+              <!-- Live Airplane -->
+              <div class="airborne-aircraft" id="aircraftMarker">
+                <div class="aircraft-glow"></div>
+                <div class="aircraft-sprite">✈</div>
+                <div class="aircraft-tooltip">
+                  <strong id="radarFlightNum">SA 127</strong>
+                  <span>Cruising FL360</span>
+                </div>
+              </div>
+
+              <!-- Destination Point -->
+              <div class="waypoint wp-dest">
+                <span class="wp-dot dest"></span>
+                <span class="wp-tag">JFK</span>
+              </div>
+
+              <div class="radar-badges-overlay">
+                <span class="live-pill"><span class="pulse-indicator"></span> SATELLITE FEED ACTIVE</span>
+                <span class="radar-time" id="currentTimeDisplay">UTC 20:53:17</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Telemetry Data Console -->
+          <div class="telemetry-console">
+            <div class="console-head">
+              <div class="active-flight-meta">
+                <span class="aircraft-callsign" id="telemetryCallsign">SA 127</span>
+                <span class="aircraft-model">Boeing 787-9 Dreamliner</span>
+              </div>
+              <span class="flight-status-badge in-flight">In Flight</span>
+            </div>
+
+            <div class="telemetry-metrics-grid">
+              <div class="metric-block">
+                <span class="metric-label">ALTITUDE</span>
+                <strong class="metric-value" id="altValue">36,420 <small>ft</small></strong>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">GROUND SPEED</span>
+                <strong class="metric-value" id="speedValue">548 <small>mph</small></strong>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">ESTIMATED ARRIVAL</span>
+                <strong class="metric-value" id="etaValue">08:40 PM</strong>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">ARRIVAL GATE</span>
+                <strong class="metric-value">Terminal 4 • B12</strong>
+              </div>
+            </div>
+
+            <!-- Route progress meter -->
+            <div class="flight-progress-wrap">
+              <div class="progress-labels">
+                <span>HYD (02:15 PM)</span>
+                <span id="progressPercent">68% Complete</span>
+                <span>JFK (08:40 PM)</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="flightProgressBar" style="width: 68%;"></div>
+              </div>
+            </div>
+
+            <div class="telemetry-actions">
+              <button class="btn-outline-dark btn-block" onclick="openFlightRadarPicker()">
+                Switch Tracked Aircraft
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ EXPERIENCE / PROCESS ═══════════════════════════ -->
+  <section class="section-wrap" id="process">
+    <div class="island">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="pill-badge">
+            <span class="pill-dot"></span> The Journey
+          </div>
+          <h2 class="section-title">Designed for seamless journeys.</h2>
+          <p class="section-subtitle">
+            From search to touchdown, experience aviation without the friction.
+          </p>
+        </div>
+
+        <div class="experience-showcase">
+          <div class="experience-steps">
+            <div class="exp-step active" data-exp="0" onclick="setExperienceStep(0)">
+              <div class="exp-number">01</div>
+              <div>
+                <h4>Predictive Fare Intelligence</h4>
+                <p>Our algorithms forecast fare fluctuations 21 days out, guaranteeing you never overpay for high-demand routes.</p>
+              </div>
+            </div>
+
+            <div class="exp-step" data-exp="1" onclick="setExperienceStep(1)">
+              <div class="exp-number">02</div>
+              <div>
+                <h4>Interactive Cabin Selection</h4>
+                <p>View true 3D pitch, extra-legroom seats, overhead bin availability, and silent cabins before you book.</p>
+              </div>
+            </div>
+
+            <div class="exp-step" data-exp="2" onclick="setExperienceStep(2)">
+              <div class="exp-number">03</div>
+              <div>
+                <h4>Zero-Latency Check-In</h4>
+                <p>Digital boarding passes automatically sync to your Apple Wallet & Google Wallet with gate alerts.</p>
+              </div>
+            </div>
+
+            <div class="exp-step" data-exp="3" onclick="setExperienceStep(3)">
+              <div class="exp-number">04</div>
+              <div>
+                <h4>Autonomous Rebooking</h4>
+                <p>Weather delay? SkyTrack re-routes you on the fastest alternative partner connection in seconds.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feature Mint Card Inspired by Lighter -->
+          <div class="experience-visual-card">
+            <div class="mint-gradient-card" id="expMintDisplay">
+              <div class="mint-content-step active" data-mint="0">
+                <div class="mint-icon-badge">📊</div>
+                <h3>Fare Forecast: 94% Accuracy</h3>
+                <p>Best time to buy: Book within 48h to save up to ₹14,200</p>
+                <div class="mint-mini-pill">Prices rising next Tuesday</div>
+              </div>
+
+              <div class="mint-content-step" data-mint="1">
+                <div class="mint-icon-badge">💺</div>
+                <h3>Seat Selection: 14A (Window)</h3>
+                <p>Dreamliner Wing View • Extra Legroom • Power Outlet</p>
+                <div class="mint-mini-pill">Cabin quiet zone</div>
+              </div>
+
+              <div class="mint-content-step" data-mint="2">
+                <div class="mint-icon-badge">📱</div>
+                <h3>Pass Active on Mobile</h3>
+                <p>TSA PreCheck Verified • Boarding Group 2 • Gate B12</p>
+                <div class="mint-mini-pill">Offline access enabled</div>
+              </div>
+
+              <div class="mint-content-step" data-mint="3">
+                <div class="mint-icon-badge">🛡️</div>
+                <h3>Flight Protection Guard</h3>
+                <p>Instant compensation credit & alternate flight guarantees</p>
+                <div class="mint-mini-pill">24/7 Priority Concierge</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ MY BOOKING CARD ═══════════════════════════ -->
+  <section class="section-wrap" id="bookings">
+    <div class="island">
+      <div class="container">
+
+        <div class="section-header">
+          <div class="pill-badge">
+            <span class="pill-dot"></span> Active Itinerary
+          </div>
+          <h2 class="section-title">My upcoming journey.</h2>
+        </div>
+
+        <!-- Boarding Pass Style Card -->
+        <div class="boarding-card">
+          <div class="boarding-top">
+            <div class="itinerary-ref">
+              <span class="meta-label">BOOKING REFERENCE</span>
+              <h3 class="ref-code" id="bookingRefDisplay">SKY-8F29A</h3>
+            </div>
+            <div class="status-pill confirmed">● Confirmed & Ticketed</div>
+          </div>
+
+          <div class="flight-path-row">
+            <div class="port-block">
+              <span class="port-code">HYD</span>
+              <span class="port-city">Hyderabad (RGIA)</span>
+              <span class="port-time">02:15 PM</span>
+            </div>
+
+            <div class="path-graphic">
+              <span class="flight-duration-tag">16h 25m • Non-Stop</span>
+              <div class="path-line">
+                <span class="plane-marker">✈</span>
+              </div>
+              <span class="flight-operator-tag">SkyAir SA 127 • Boeing 787</span>
+            </div>
+
+            <div class="port-block text-right">
+              <span class="port-code">JFK</span>
+              <span class="port-city">New York (John F. Kennedy)</span>
+              <span class="port-time">08:40 PM</span>
+            </div>
+          </div>
+
+          <div class="boarding-details-grid">
+            <div class="detail-cell">
+              <span class="detail-label">PASSENGER</span>
+              <strong class="detail-val" id="passengerDisplayName">Alex Harrison</strong>
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">SEAT</span>
+              <strong class="detail-val">14A (Window)</strong>
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">CABIN CLASS</span>
+              <strong class="detail-val">Economy Flex</strong>
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">TERMINAL / GATE</span>
+              <strong class="detail-val">T4 / Gate B12</strong>
+            </div>
+          </div>
+
+          <div class="boarding-footer">
+            <div class="barcode-graphic">||| | ||||| || |||| |||||| | |||| ||| ||||||| |||</div>
+            <button class="btn-ghost" onclick="printBoardingPass()">Download Ticket PDF</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ FAQ ═══════════════════════════ -->
+  <section class="section-wrap" id="faq">
+    <div class="island">
+      <div class="container max-w-760">
+
+        <div class="section-header">
+          <div class="pill-badge">
+            <span class="pill-dot"></span> Common Questions
+          </div>
+          <h2 class="section-title">Aviation FAQ.</h2>
+        </div>
+
+        <div class="faq-accordion">
+          <div class="faq-item">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>How accurate is SkyTrack's live radar flight telemetry?</span>
+              <span class="faq-indicator">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Our radar relies on dual terrestrial ADS-B receivers and Iridium satellite networks, updating coordinates, ground speeds, and barometric altitudes every 2.5 seconds with 99.8% precision.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>Can I modify or cancel my reservation after booking?</span>
+              <span class="faq-indicator">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Yes. All flights booked via SkyTrack feature free 24-hour cancellation and simple 1-click date changes directly from the "My Journey" console without hidden re-ticketing penalties.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>What is the SkyTrack AI Travel Assistant?</span>
+              <span class="faq-indicator">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Our onboard AI understands route logistics, layovers, visa requirements, baggage policies, and live aircraft status. Click the floating "✦" button at any time to ask flight queries.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-trigger" onclick="toggleFaq(this)">
+              <span>Are baggage and seat reservations included in the shown fares?</span>
+              <span class="faq-indicator">+</span>
+            </button>
+            <div class="faq-body">
+              <p>Every fare explicitly outlines baggage allowances (typically 2 check-in pieces + 1 carry-on for transatlantic routes) and seat inclusions with 100% upfront pricing clarity.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ DARK CTA ═══════════════════════════ -->
+  <section class="section-wrap">
+    <div class="island cta-island">
+      <div class="cta-grid-pattern"></div>
+      <div class="cta-glow-spot"></div>
+
+      <div class="container cta-container">
+        <div class="pill-badge pill-badge-dark">
+          <span class="pill-dot" style="background: #23E6AF;"></span>
+          Join 200,000+ Global Jetsetters
+        </div>
+        <h2 class="cta-headline">Experience aviation<br>crafted for precision.</h2>
+        <p class="cta-subtext">Book flights, monitor gates, and receive automated delay compensations.</p>
+
+        <div class="cta-controls">
+          <button class="btn-white btn-lg" onclick="scrollToSection('search-section')">Book Your Next Flight →</button>
+          <div class="newsletter-capsule">
+            <input type="email" placeholder="Enter work email for fare alerts" id="ctaEmailInput" />
+            <button class="btn-primary" onclick="subscribeNewsletter()">Get Alerts</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+  <footer class="footer-wrap">
+    <div class="footer-island">
+      <div class="footer-columns">
+        <div class="footer-brand-col">
+          <a href="#" class="brand-logo text-white">
+            <span class="logo-icon">✈</span>
+            <span>Sky<span>Track</span></span>
+          </a>
+          <p class="footer-tagline">Real-time aviation intelligence, fare optimization, and modern flight management.</p>
+          <div class="system-status-indicator">
+            <span class="pulse-dot-green"></span>
+            <span>All aviation APIs & radar feeds operational</span>
+          </div>
+        </div>
+
+        <div class="footer-link-group">
+          <strong>Aviation</strong>
+          <a href="#search-section">Flight Search</a>
+          <a href="#tracking">Live Radar</a>
+          <a href="#flights">Fare Comparison</a>
+          <a href="#bookings">Check-In Online</a>
+        </div>
+
+        <div class="footer-link-group">
+          <strong>Intelligence</strong>
+          <a href="javascript:void(0)" onclick="toggleChat()">AI Travel Assistant</a>
+          <a href="#process">Fare Prediction</a>
+          <a href="#process">Cabin Explorer</a>
+          <a href="#faq">Delay Insurance</a>
+        </div>
+
+        <div class="footer-link-group">
+          <strong>Company</strong>
+          <a href="#">About SkyTrack</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Carriage</a>
+          <a href="#">API Documentation</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <span>© 2026 SkyTrack Systems, Inc. All rights reserved.</span>
+        <span>Aviation Telemetry &copy; ICAO / IATA Feeds</span>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════ FLOATING AI CHAT ═══════════════════════════ -->
+  <button class="floating-chat-trigger" onclick="toggleChat()" aria-label="Open SkyTrack AI Assistant" id="chatTriggerBtn">
+    ✦
+  </button>
+
+  <div class="chat-flyout" id="chatWindow" role="dialog" aria-label="SkyTrack AI Assistant">
+    <div class="chat-flyout-header">
+      <div class="chat-header-info">
+        <strong>✦ SkyTrack AI Assistant</strong>
+        <small><span class="online-dot"></span> Live Transponder & Booking Assistant</small>
+      </div>
+      <button class="close-chat-btn" onclick="toggleChat()" aria-label="Close Chat">✕</button>
+    </div>
+
+    <div class="chat-conversation" id="chatMessages">
+      <div class="chat-bubble bot">
+        Hi! 👋 I'm your <strong>SkyTrack AI</strong> co-pilot. I can look up live aircraft positions, compare ticket fares, explain layovers, or book flights.
+      </div>
+      <div class="quick-prompts">
+        <button class="quick-chip" onclick="askQuickPrompt('Find cheapest flight to JFK')">Cheapest flight to JFK</button>
+        <button class="quick-chip" onclick="askQuickPrompt('Track flight SA 127')">Track SA 127</button>
+        <button class="quick-chip" onclick="askQuickPrompt('What is baggage allowance?')">Baggage rules</button>
+      </div>
+    </div>
+
+    <div class="chat-input-bar">
+      <input type="text" id="chatUserInput" placeholder="Ask about flights, radar, or gates..." onkeydown="handleChatEnter(event)" />
+      <button class="chat-send-btn" onclick="sendChatMessage()" aria-label="Send Message">➤</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════ BOOKING MODAL ═══════════════════════════ -->
+  <div class="modal-backdrop" id="bookingModal" role="dialog" aria-modal="true" aria-label="Flight Checkout">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-pretitle">FLIGHT CHECKOUT</span>
+          <h3 class="modal-title" id="modalFlightTitle">SkyAir SA 127</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeBookingModal()">✕</button>
+      </div>
+
+      <div class="modal-fare-summary" id="modalFareSummary">
+        <div>
+          <span>Route</span>
+          <strong id="modalRouteSummary">HYD → JFK</strong>
+        </div>
+        <div class="text-right">
+          <span>Total Fare</span>
+          <strong class="fare-accent" id="modalPriceSummary">₹72,450</strong>
+        </div>
+      </div>
+
+      <form class="modal-form" onsubmit="event.preventDefault(); completeBooking();">
+        <div class="form-group">
+          <label>Passenger Full Name (as on Passport)</label>
+          <input type="text" id="passengerInput" required placeholder="e.g. Alex Harrison" value="Alex Harrison" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="emailInput" required placeholder="alex@example.com" value="alex@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Passport Number</label>
+            <input type="text" id="passportInput" required placeholder="Z1234567" value="Z9847123" />
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeBookingModal()">Cancel</button>
+          <button type="submit" class="btn-primary flex-1">Confirm & Issue Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
